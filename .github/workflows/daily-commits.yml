@@ -1,0 +1,33 @@
+name: Daily Auto Commits
+
+on:
+  schedule:
+    - cron: "0 12 * * *" # Runs every day at 12:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Make 10 commits
+        run: |
+          for i in {1..10}
+          do
+            echo "Activity $i - $(date)" >> activity.txt
+            git add activity.txt
+            git commit -m "Daily activity $i"
+          done
+
+          git push
